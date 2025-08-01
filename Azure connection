@@ -1,0 +1,31 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  name: your-agent-pool-name  # your self-hosted agent pool
+
+jobs:
+- job: InstallTools
+  displayName: 'Install Azure CLI & DevOps CLI Extension'
+  steps:
+    - task: UsePythonVersion@0
+      inputs:
+        versionSpec: '3.x'
+        architecture: 'x64'
+    - bash: |
+        python -m pip install --upgrade pip
+        pip install --pre azure-cli
+      displayName: 'Install Azure CLI via pip'
+    - bash: az extension add -n azure-devops
+      displayName: 'Install Azure DevOps CLI extension'
+
+- job: UseAzureCLI
+  displayName: 'Execute az commands'
+  dependsOn: InstallTools
+  steps:
+    - bash: |
+        az --version
+        az account show
+      displayName: 'Verify Azure CLI'
