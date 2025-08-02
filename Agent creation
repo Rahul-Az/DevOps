@@ -1,0 +1,11 @@
+wget https://download.agent.dev.azure.com/agent/4.259.0/vsts-agent-linux-x64-4.259.0.tar.gz
+
+mkdir myagent && cd myagent
+
+tar zxvf ~/vsts-agent-linux-x64-4.259.0.tar.gz
+
+./config.sh
+
+sudo ./svc.sh install
+
+sudo ./svc.sh start
