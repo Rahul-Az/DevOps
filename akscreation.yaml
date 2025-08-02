@@ -11,4 +11,4 @@ jobs:
    steps:
    - task: AzureCLI@2
    - script: |
-       az aks create --resourcce-group user-omusgtvijdoy --name myaks --node-count 3 --location eastus --generate-ssh-keys
+       az aks create --resource-group user-omusgtvijdoy --name myaks1 --node-count 3 --location eastus --generate-ssh-keys
