@@ -4,7 +4,7 @@ trigger:
       - main
 
 pool:
-  name: linux-self-hosted-agent-pool  # Replace with your pool name
+  name: azurepool  # Replace with your pool name
 
 jobs:
 - job: InstallAndConfigureAzureCLI
