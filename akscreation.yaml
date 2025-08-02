@@ -25,4 +25,5 @@ jobs:
             --name myaks1 \
             --overwrite-existing
           kubectl get nodes
+          sudo snap install kubectl --classic
         displayName: Create AKS Cluster (CLI script)
