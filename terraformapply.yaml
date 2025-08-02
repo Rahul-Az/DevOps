@@ -1,0 +1,30 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  name: azurepool     # your self-hosted Linux agent pool
+
+jobs:
+  - job: terraformSubnet
+    displayName: 'Terraform Plan & Apply (Subnet)'
+    steps:
+      - checkout: self
+
+      - task: TerraformInstaller@0
+        displayName: 'Install Terraform'
+        inputs:
+          terraformVersion: 'latest'
+
+      - script: |
+          cd terraform
+          terraform init
+          terraform validate
+          terraform plan -out=tfplan
+        displayName: 'Terraform Init / Validate / Plan'
+
+      - script: |
+          cd terraform
+          terraform apply -auto-approve tfplan
+        displayName: 'Terraform Apply'
