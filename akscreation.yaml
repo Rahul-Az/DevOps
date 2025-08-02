@@ -6,9 +6,9 @@ pool:
     name: azurepool
 
 jobs:
- - job: creating a aks
+ - job: createAksCluster
    displayName: 'create a aks'
    steps:
-   - task: AKS@3
+   - task: AzureCLI@2
    - script: |
-       az aks create --resourcce-group rgname --name myaks --node-count 3 --location eastus --generate-ssh-keys
+       az aks create --resourcce-group user-omusgtvijdoy --name myaks --node-count 3 --location eastus --generate-ssh-keys
