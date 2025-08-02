@@ -9,3 +9,5 @@ tar zxvf ~/vsts-agent-linux-x64-4.259.0.tar.gz
 sudo ./svc.sh install
 
 sudo ./svc.sh start
+
+updated from vm
