@@ -2,13 +2,27 @@ trigger:
   branches:
     include:
       - main
+
 pool:
-    name: azurepool
+  name: azurepool
 
 jobs:
- - job: createAksCluster
-   displayName: 'create a aks'
-   steps:
-   - task: AzureCLI@2
-   - script: |
-       az aks create --resource-group user-omusgtvijdoy --name myaks1 --node-count 3 --location eastus --generate-ssh-keys
+  - job: createAksCluster
+    displayName: 'Create AKS Cluster'
+    steps:
+      - script: |
+          echo "Creating AKS..."
+          az aks create \
+            --resource-group user-lesutvpkrxjr \
+            --name myaks1 \
+            --node-count 3 \
+            --location eastus \
+            --generate-ssh-keys
+
+          echo "Setting kubeconfig and listing nodes:"
+          az aks get-credentials \
+            --resource-group user-lesutvpkrxjr \
+            --name myaks1 \
+            --overwrite-existing
+          kubectl get nodes
+        displayName: Create AKS Cluster (CLI script)
