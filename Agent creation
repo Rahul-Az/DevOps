@@ -11,3 +11,9 @@ sudo ./svc.sh install
 sudo ./svc.sh start
 
 updated from vm
+
+
+------------------------
+sudo az aks install-cli
+ wget https://dl.k8s.io/release/v1.33.3/bin/linux/amd64/kubectl
+
