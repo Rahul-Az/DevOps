@@ -1,0 +1,31 @@
+trigger:
+  branches:
+    include:
+      -main
+trigger:
+  branches:
+    include:
+      - main
+pool:
+  name: azurepool
+
+jobs:
+  - job: basicwebpage
+    displayname: 'creating web page'
+    steps:
+      - script: |
+          sudo apt-get update
+          sudo apt-get install -y apache2
+
+
+          cat > webpage.html <<'EOF'
+          <html>
+          <body>
+          <h1>Hello from Azure DevOps</h1>
+          <p>Pipeline deployed this!</p>
+          </body>
+          </html>
+          EOF
+          sudo mv webpage.html /var/www/html/index.html
+          sudo systemctl enable apache2
+          sudo systemctl start apache2
