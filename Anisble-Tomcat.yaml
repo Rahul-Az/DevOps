@@ -3,3 +3,4 @@ sudo apt install -y default-jdk tomcat9 tomcat9-admin tomcat9-examples
 sudo systemctl start tomcat9
 sudo systemctl enable tomcat9
 sudo systemctl status tomcat9
+sudo apt install -y default-jdk maven
