@@ -1,26 +1,12 @@
-apiVersion: apps/v1
-kind: Deployment
+apiVersion: v1
+kind: ConfigMap
 metadata:
-  name: my-webpage-deployment
+  name: my-webpage-config
   namespace: <namespace>
-spec:
-  replicas: 1
-  selector:
-    matchLabels:
-      app: my-webpage
-  template:
-    metadata:
-      labels:
-        app: my-webpage
-    spec:
-      containers:
-      - name: my-webpage-container
-        image: nginx:latest
-        volumeMounts:
-        - name: webpage
-          mountPath: /usr/share/nginx/html/index.html
-          subPath: index.html
-      volumes:
-      - name: webpage
-        configMap:
-          name: my-webpage-config
+data:
+  index.html: |
+    <html>
+      <body>
+        <h1>Hello, World!</h1>
+      </body>
+    </html>
