@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: my-webpage-deployment
+  namespace: <namespace>
 spec:
   replicas: 1
   selector:
@@ -13,12 +14,13 @@ spec:
         app: my-webpage
     spec:
       containers:
-        - name: nginx
-          image: nginx:alpine
-          volumeMounts:
-            - name: webpage
-              mountPath: /usr/share/nginx/html
-      volumes:
+      - name: my-webpage-container
+        image: nginx:latest
+        volumeMounts:
         - name: webpage
-          configMap:
-            name: my-webpage-config
+          mountPath: /usr/share/nginx/html/index.html
+          subPath: index.html
+      volumes:
+      - name: webpage
+        configMap:
+          name: my-webpage-config
