@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: my-webpage-config
-  namespace: <namespace>
+  namespace: default
 data:
   index.html: |
     <html>
