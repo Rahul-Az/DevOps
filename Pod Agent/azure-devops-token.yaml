@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: azure-devops-token
+  namespace: default
+type: Opaque
+data:
+  token: QmtZR0NzUWlOandydlpvY2g4V0cwUDZjdnk1QUpUMm5NVThWY2hRTDA5RVUzOHN6QURkb0pRUUo5OUJKQUNBQUFBQUFka1JuQUFBU0FaRE8xRFZZ #to get this run echo -n 'PAT' | base64
