@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: azure-devops-agent
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: azure-devops-agent
+  template:
+    metadata:
+      labels:
+        app: azure-devops-agent
+    spec:
+      containers:
+        - name: agent
+          image: mcr.microsoft.com/azure-pipelines/vsts-agent:latest
+          env:
+            - name: VSTS_ACCOUNT
+              value: "user-awulditvjzcl"   # Your Azure DevOps org name
+            - name: VSTS_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: azure-devops-token
+                  key: token
+            - name: VSTS_AGENT
+              value: "aks-agent-1"          # Agent name
+            - name: VSTS_POOL
+              value: "myproject"            # Agent pool name
+      restartPolicy: Always
