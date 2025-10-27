@@ -1,8 +1,9 @@
 wget https://download.agent.dev.azure.com/agent/4.259.0/vsts-agent-linux-x64-4.259.0.tar.gz
 
-mkdir myagent && cd myagent
-
+mkdir /home/myuser/myagent && cd /home/myuser/myagent
 tar zxvf ~/vsts-agent-linux-x64-4.259.0.tar.gz
+su - myuser
+cd ~/myagent
 
 ./config.sh
 
