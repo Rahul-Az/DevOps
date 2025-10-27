@@ -1,0 +1,69 @@
+trigger:
+- main
+
+pool:
+  name: myproject   # Your self-hosted agent pool
+
+variables:
+  imageName: docker.io/devops357/mini-webapp
+  tag: latest
+
+stages:
+- stage: CI
+  displayName: 'Build and Scan'
+  jobs:
+  - job: build
+    displayName: 'Build and Scan Job'
+    steps:
+    - checkout: self
+
+    # 🧰 Install Terraform
+    - script: |
+        sudo apt-get update -y
+        sudo apt-get install -y wget unzip
+        wget https://releases.hashicorp.com/terraform/1.9.7/terraform_1.9.7_linux_amd64.zip
+        unzip terraform_1.9.7_linux_amd64.zip
+        sudo mv terraform /usr/local/bin/
+        terraform version
+      displayName: 'Install Terraform'
+
+    # ⚙️ Terraform Init & Plan
+    - script: |
+        cd infra
+        terraform init
+        terraform validate
+        terraform plan
+      displayName: 'Terraform Init and Plan'
+
+    # 🔎 Trivy IaC Scan (Terraform)
+    - script: |
+        cd infra
+        trivy config . --exit-code 0 --severity HIGH,CRITICAL
+      displayName: 'Trivy Scan Terraform'
+
+    # 🐳 Build Docker image
+    - script: |
+        docker build -t $(imageName):$(tag) mini-webapp--containerized/
+      displayName: 'Build Docker Image'
+
+    # 🔍 Trivy Scan Docker image
+    - script: |
+        trivy image --exit-code 0 --severity HIGH,CRITICAL $(imageName):$(tag)
+      displayName: 'Trivy Scan Docker Image'
+
+    # 🔍 Trivy Scan Kubernetes manifest
+    - script: |
+        trivy config mini-webapp--containerized/ --exit-code 0 --severity HIGH,CRITICAL
+      displayName: 'Trivy Scan Kubernetes Manifest'
+
+    # 🔐 Login to Docker Hub
+    - script: |
+        echo "$(DOCKERHUB_TOKEN)" | docker login -u "$(DOCKERHUB_USERNAME)" --password-stdin
+      displayName: 'Login to Docker Hub'
+
+    # 🚀 Push Image to Docker Hub
+    - script: |
+        docker push $(imageName):$(tag)
+        docker tag $(imageName):$(tag) $(imageName):latest
+        docker push $(imageName):latest
+      displayName: 'Push Docker Image to Docker Hub'
