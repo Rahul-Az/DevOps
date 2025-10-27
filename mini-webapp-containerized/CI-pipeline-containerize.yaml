@@ -7,7 +7,7 @@ pool:
 
 variables:
   dockerRegistry: docker.io
-  imageName: $(dockerRegistry)/Devops357/mini-webapp
+  imageName: $(dockerRegistry)/devops357/mini-webapp
   tag: 'latest'
 
 steps:
@@ -27,6 +27,7 @@ steps:
 
 # 3️⃣ Build Docker image
 - script: |
+    cd /home/myuser/myagent/_work/1/s/mini-webapp-containerized
     docker build -t $(imageName):$(tag) .
   displayName: 'Build Docker image'
 
