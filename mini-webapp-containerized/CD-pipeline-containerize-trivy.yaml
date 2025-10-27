@@ -1,0 +1,23 @@
+trigger: none   # Run manually or from CI pipeline completion
+
+pool:
+  name: myproject  # self-hosted agent already az-logged-in
+
+variables:
+  aksResourceGroup: 'myResourceGroup'
+  aksClusterName: 'myaks1'
+
+steps:
+- checkout: self
+
+# --- Optional: Apply Terraform (if infra not created) ---
+- script: |
+    cd infra
+    terraform apply -auto-approve
+  displayName: 'Terraform Apply'
+
+# --- Deploy to AKS ---
+- script: |
+    az aks get-credentials --resource-group $(aksResourceGroup) --name $(aksClusterName) --admin
+    kubectl apply -f mini-webapp--containerized/k8s-deployment.yaml
+  displayName: 'Deploy to AKS'
