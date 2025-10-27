@@ -1,0 +1,26 @@
+# azure-pipelines-cd.yml
+trigger: none   # Triggered manually or by release pipeline
+
+pool:
+  name: myproject
+
+steps:
+# 1️⃣ Checkout code
+- checkout: self
+
+# 2️⃣ (Optional) Make sure kubectl is available
+- script: |
+    kubectl version --client
+  displayName: 'Check kubectl version'
+
+# 3️⃣ Deploy to AKS
+- script: |
+    # If needed, get AKS credentials (skip if already logged in via az login)
+    az aks get-credentials --resource-group user-xszapxucymgs --name myaks1 --overwrite-existing
+    
+    # Apply deployment
+    kubectl apply -f k8s-deployment.yaml
+    
+    # Wait for deployment to complete
+    kubectl rollout status deployment/mini-webapp
+  displayName: 'Deploy to Kubernetes'
