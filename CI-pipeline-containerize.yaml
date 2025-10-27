@@ -1,0 +1,48 @@
+# azure-pipelines-ci.yml
+trigger:
+- main  # or whichever branch you want
+
+pool:
+  name: myproject
+
+variables:
+  imageName: Devops357/mini-webapp
+  tag: 'latest'
+
+steps:
+# 1️⃣ Checkout source
+- checkout: self
+  displayName: 'Checkout code'
+
+# 2️⃣ Install Trivy
+- script: |
+    sudo apt-get update -y
+    sudo apt-get install -y wget apt-transport-https gnupg lsb-release
+    wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+    echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+    sudo apt-get update -y
+    sudo apt-get install -y trivy
+  displayName: 'Install Trivy scanner'
+
+# 3️⃣ Build Docker image
+- script: |
+    docker build -t $(imageName):$(tag) .
+  displayName: 'Build Docker image'
+
+# 4️⃣ Run Trivy scan on the image
+- script: |
+    trivy image --exit-code 1 --severity HIGH,CRITICAL $(imageName):$(tag) || echo "Scan failed"
+  displayName: 'Trivy vulnerability scan'
+  continueOnError: true  # Change to false if you want pipeline to fail on critical vulnerabilities
+
+# 5️⃣ Login to Docker Hub using token (stored in pipeline variables)
+- script: |
+    echo "$(DOCKERHUB_TOKEN)" | docker login -u "$(DOCKERHUB_USERNAME)" --password-stdin
+  displayName: 'Login to Docker Hub'
+
+# 6️⃣ Push image to Docker Hub
+- script: |
+    docker push $(imageName):$(tag)
+    docker tag $(imageName):$(tag) $(imageName):latest
+    docker push $(imageName):latest
+  displayName: 'Push image to Docker Hub'
