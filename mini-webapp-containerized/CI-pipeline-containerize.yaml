@@ -6,7 +6,8 @@ pool:
   name: myproject
 
 variables:
-  imageName: Devops357/mini-webapp
+  dockerRegistry: docker.io
+  imageName: $(dockerRegistry)/Devops357/mini-webapp
   tag: 'latest'
 
 steps:
