@@ -17,15 +17,15 @@ stages:
     steps:
     - checkout: self
 
-    # 🧰 Install Terraform
+  # 2️⃣ Install Trivy
     - script: |
         sudo apt-get update -y
-        sudo apt-get install -y wget unzip
-        wget https://releases.hashicorp.com/terraform/1.9.7/terraform_1.9.7_linux_amd64.zip
-        unzip terraform_1.9.7_linux_amd64.zip
-        sudo mv terraform /usr/local/bin/
-        terraform version
-      displayName: 'Install Terraform'
+        sudo apt-get install -y wget apt-transport-https gnupg lsb-release
+        wget -qO - https://aquasecurity.github.io/trivy-repo/deb/public.key | sudo apt-key add -
+        echo deb https://aquasecurity.github.io/trivy-repo/deb $(lsb_release -sc) main | sudo tee -a /etc/apt/sources.list.d/trivy.list
+        sudo apt-get update -y
+        sudo apt-get install -y trivy
+      displayName: 'Install Trivy scanner'
 
     # ⚙️ Terraform Init & Plan
     - script: |
@@ -43,6 +43,7 @@ stages:
 
     # 🐳 Build Docker image
     - script: |
+        cd /home/myuser/myagent/_work/1/s/mini-webapp-containerized
         docker build -t $(imageName):$(tag) mini-webapp--containerized/
       displayName: 'Build Docker Image'
 
@@ -53,7 +54,8 @@ stages:
 
     # 🔍 Trivy Scan Kubernetes manifest
     - script: |
-        trivy config mini-webapp--containerized/ --exit-code 0 --severity HIGH,CRITICAL
+        cd /home/myuser/myagent/_work/1/s/mini-webapp--containerized
+        trivy config . --exit-code 0 --severity HIGH,CRITICAL
       displayName: 'Trivy Scan Kubernetes Manifest'
 
     # 🔐 Login to Docker Hub
