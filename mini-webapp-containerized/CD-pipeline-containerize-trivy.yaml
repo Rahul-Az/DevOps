@@ -19,5 +19,6 @@ steps:
 # --- Deploy to AKS ---
 - script: |
     az aks get-credentials --resource-group $(aksResourceGroup) --name $(aksClusterName) --admin
+    cd /home/myuser/myagent/_work/1/s/mini-webapp-containerized
     kubectl apply -f mini-webapp--containerized/k8s-deployment.yaml
   displayName: 'Deploy to AKS'
