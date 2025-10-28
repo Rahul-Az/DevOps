@@ -44,7 +44,7 @@ stages:
     # 🐳 Build Docker image
     - script: |
         cd /home/myuser/myagent/_work/1/s/mini-webapp-containerized
-        docker build -t $(imageName):$(tag) mini-webapp--containerized/
+        docker build -t $(imageName):$(tag) .
       displayName: 'Build Docker Image'
 
     # 🔍 Trivy Scan Docker image
