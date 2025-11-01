@@ -1,0 +1,196 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: my-first
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: my-first
+  template:
+    metadata:
+      labels:
+        app: my-first
+    spec:
+      containers:
+      - name: my-nginx
+        image: nginx
+        ports:
+        - containerPort: 8080
+========================================
+apiVersion: v1
+kind: Service
+metadata:
+      name: my-first-service
+spec:
+  selector:
+      app: my-first
+  ports:
+   - protocol: TCP
+     port: 80
+     targetPort: 8080
+  type: LoadBalancer
+  loadBalancerIP: <your-static-ip>
+==================================
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-ingress
+spec:
+  rules:
+  - host: myfirstingress.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: my-first-service
+            port:
+              number: 80
+==================================
+apiVersion:
+kind: Deamonset
+metadata:
+  name: my-demonset
+spec:
+  selector:
+    matchlabels:
+      app: my-dep
+  template:
+    metadata:
+      labels:
+      app: my-dep
+    spec:
+      contaniner:
+        - name: containrname
+          image:
+==================================
+apiVersion:
+kind: Statefulset
+metadata:
+  name: my-state
+spec:
+  serviceName: my-service
+  replica: 3
+  selector:
+    MatchLabels:
+      app: my-app
+  template:
+    metadata:
+      labels:
+        app: my-app
+   spec:
+     container:
+==================================
+apiVersion:
+kind: job
+metadata:
+  name: my-job
+spec:
+  template:
+    spec:
+      container:
+      - name: my-job
+        image: my-image
+        command:
+      restartPolicy:never
+backoffLimit: 2
+==================================
+apiVersion:
+kind: Cronjob
+metadata:
+  name: my-cronjob
+spec:
+  Schedule: "0 0 * * *"
+  Jobtemplate:
+    spec:
+      template:
+        spec:
+          container:
+          - name: my-job
+            image: my-image
+            command:
+         restartPolicy:never
+backoffLimit: 2
+==================================
+apiVersion:
+kind: PersistentVolume
+metadata:
+  name: mypv
+spec:
+  capacity:
+    storage: 10 GB
+  accessModes:
+    -  Read
+  hostpath:
+    path: /mnt/
+==================================
+apiVersion:
+kind: PersistentVolumeClaim
+metadata:
+  name: mypvc
+spec:
+  accessModes:
+    - read
+  resoureces:
+    requests:
+      storage: 10 GB
+==================================
+apiVersion:
+kind: configmap
+metadate:
+  name: myconfig
+data:
+  APP_Version: "V1.2"
+==================================
+apiVesion:
+kind: Secrets
+metadata:
+  name: mysec
+type: Opaque
+data:
+  username:
+  password:
+==================================
+apiVerison:
+kind: HorizontalPodAutoscaler
+metadata:
+  name: my-HPA
+spec:
+  scaleTargetRef:
+    apiVersion:
+    kind: Deployment
+    name: myapp
+  minReplica:2
+  maxReplica:3
+  matrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: utilization
+        averageUtilization: 70
+==================================
+apiVersion:
+kind: Deployment
+metadata:
+  name: 
+  matchlabels:
+    app: myapp
+spec:
+  selctors:
+    app: myapp
+  template:
+    containers:
+    - name: 
+      image:
+      ports:
+      - containerport: 8080
+    resourece:
+      requests:
+        cpu: "0.5m"
+        memory: "500 MB"
+      limits:
+        cpu: "1 GB"
+        memory: "800 MB"        
